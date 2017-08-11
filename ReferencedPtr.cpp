@@ -36,25 +36,25 @@ template<class T> class ReferencedPtr {
 public:
 	ReferencedPtr() {
 		instance_ = NULL;
-		(*count) = 0;
+		(*count_) = 0;
 	}
 	ReferencedPtr(T * instance) {
 		instance_ = instance;
-		(*count) = 1;
+		(*count_) = 1;
 	}
 	ReferencedPtr(ReferencedPtr& r): ReferencedPtr() {
 		if(r.instance_) {
-			(*r.count)++;
-			count = r.count;
+			(*r.count_)++;
+			count_ = r.count_;
 		}
 	}
 	~ReferencedPtr() {
-		if(*count == 0) {
-			delete count;
-			count = NULL;
+		if(*count_ == 0) {
+			delete count_;
+			count_ = NULL;
 		}
 		else {
-			(*count)--;
+			(*count_)--;
 		}
 	}
 	
@@ -63,13 +63,13 @@ public:
 	}
 	
 	uint32 use_count() {
-		return *count;
+		return *count_;
 	}
 	
 	ReferencedPtr& operator = (ReferencedPtr & r) {
 		if(r.instance_) {
-			(*r.count)++;
-			count = r.count;
+			(*r.count_)++;
+			count_ = r.count_;
 		}
 		return *this;
 	}
@@ -84,19 +84,19 @@ public:
 	//we don't have nullptr, so we must use a release function explicitly
 	void release() {
 		if(!instance_) return;
-		(*count)--;
-		if(*count == 0) {
+		(*count_)--;
+		if(*count_ == 0) {
 			delete instance_;
 			instance_ = NULL;
 		}
 		else {
-			count = new uint32(0);
+			count_ = new uint32(0);
 		}
 	}
 	
 private:
 	T * instance_ = NULL;
-	uint32 * count = new uint32;
+	uint32 * count_ = new uint32;
 };
 
 
