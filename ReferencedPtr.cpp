@@ -35,10 +35,12 @@ public:
 template<class T> class ReferencedPtr {
 public:
 	ReferencedPtr() {
+		cout<<"ReferencedPtr()"<<endl;
 		instance_ = NULL;
 		(*count_) = 0;
 	}
 	ReferencedPtr(T * instance) {
+		cout<<"ReferencedPtr(T*)"<<endl;
 		instance_ = instance;
 		(*count_) = 1;
 	}
@@ -49,6 +51,8 @@ public:
 		}
 	}
 	~ReferencedPtr() {
+		cout<<"~ReferencedPtr()"<<endl;
+		release();
 		if(*count_ == 0) {
 			delete count_;
 			count_ = NULL;
@@ -119,7 +123,3 @@ int main()
 	cout<<p2.use_count()<<endl;
 	cout<<p3.use_count()<<endl;
 }
-
-
-
-
