@@ -37,11 +37,12 @@ public:
 	ReferencedPtr() {
 		cout<<"ReferencedPtr()"<<endl;
 		instance_ = NULL;
-		(*count_) = 0;
+		count_ = NULL;
 	}
 	ReferencedPtr(T * instance) {
 		cout<<"ReferencedPtr(T*)"<<endl;
 		instance_ = instance;
+		count_ = new uint32;
 		(*count_) = 1;
 	}
 	ReferencedPtr(ReferencedPtr& r): ReferencedPtr() {
@@ -53,13 +54,6 @@ public:
 	~ReferencedPtr() {
 		cout<<"~ReferencedPtr()"<<endl;
 		release();
-		if(*count_ == 0) {
-			delete count_;
-			count_ = NULL;
-		}
-		else {
-			(*count_)--;
-		}
 	}
 	
 	T* get() {
@@ -67,13 +61,16 @@ public:
 	}
 	
 	uint32 use_count() {
+		if(!count_) return 0;
 		return *count_;
 	}
 	
 	ReferencedPtr& operator = (ReferencedPtr & r) {
+		release();
 		if(r.instance_) {
 			(*r.count_)++;
 			count_ = r.count_;
+			instance_ = r.instance_;
 		}
 		return *this;
 	}
@@ -91,16 +88,15 @@ public:
 		(*count_)--;
 		if(*count_ == 0) {
 			delete instance_;
-			instance_ = NULL;
+			delete count_;
 		}
-		else {
-			count_ = new uint32(0);
-		}
+		instance_ = NULL;
+		count_ = NULL;
 	}
 	
 private:
 	T * instance_ = NULL;
-	uint32 * count_ = new uint32;
+	uint32 * count_ = NULL;
 };
 
 
@@ -112,7 +108,7 @@ int main()
 	ptr_A p1(pa);
 	ptr_A p2 = p1;
 	ptr_A p3 = p1;
-	
+
 	cout<<p1.use_count()<<endl;
 	cout<<p2.use_count()<<endl;
 	cout<<p3.use_count()<<endl;
