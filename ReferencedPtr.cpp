@@ -42,8 +42,8 @@ public:
 	ReferencedPtr(T * instance) {
 		cout<<"ReferencedPtr(T*)"<<endl;
 		instance_ = instance;
-		count_ = new uint32;
-		(*count_) = 1;
+		count_ = new atomic<uint32>(0);
+		(*count_)++;
 	}
 	ReferencedPtr(ReferencedPtr& r): ReferencedPtr() {
 		if(r.instance_) {
@@ -96,7 +96,7 @@ public:
 	
 private:
 	T * instance_ = NULL;
-	uint32 * count_ = NULL;
+	atomic<uint32> * count_ = NULL;
 };
 
 
